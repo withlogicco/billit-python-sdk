@@ -1,2 +1,8 @@
-# billit-python-sdk
-Python SDK for https://billit.io/
+# Billit
+Python SDK for Billit (https://billit.io/).
+
+## Gettings started
+Coming soon.
+
+## License
+This project is [MIT licensed](./LICENSE).
