@@ -1,4 +1,4 @@
-class Error:
+class Error(Exception):
     """
     Base class for all API errors
     """
@@ -8,8 +8,12 @@ class Error:
         self.response_status_code = response_status_code
 
     def __str__(self):
-        return self.message
+        return f"Error code {self.response_status_code}, Error message: {self.message}"
 
-    def handle_error(self):
-        if self.response_status_code >= 401:
-            pass
+
+class AuthenticationError(Error):
+    pass
+
+
+class ApiError(Error):
+    pass
