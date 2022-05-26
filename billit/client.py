@@ -7,7 +7,7 @@ from .constants import (
     SANDBOX_BASE_URL,
     SANDBOX_ENVIRONMENT,
 )
-from .error import ApiError, AuthenticationError
+from .error import ApiError, AuthenticationError, InvalidEnvironment
 
 
 class Client:
@@ -20,7 +20,7 @@ class Client:
         self.account = Account(self)
 
         if environment not in [PRODUCTION_ENVIRONMENT, SANDBOX_ENVIRONMENT]:
-            raise Exception(f"Invalid environment provided: {environment}")
+            raise InvalidEnvironment(environment)
 
         if environment == PRODUCTION_ENVIRONMENT:
             self.base_url = PRODUCTION_BASE_URL
@@ -36,10 +36,9 @@ class Client:
 
             return response.json()
         except:
+            error = f"{response.text}"
             if "application/json" in response.headers["Content-Type"]:
                 error = f"{response.json()['message']}"
-            else:
-                error = f"{response.text}"
 
             raise ApiError(error, response.status_code)
 

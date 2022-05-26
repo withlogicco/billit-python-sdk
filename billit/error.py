@@ -17,3 +17,11 @@ class AuthenticationError(Error):
 
 class ApiError(Error):
     pass
+
+
+class InvalidEnvironment(Exception):
+    def __init__(self, environment):
+        self.environment = environment
+
+    def __str__(self) -> str:
+        return f"Invalid environment provided: {self.environment}"
