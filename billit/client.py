@@ -18,6 +18,7 @@ class Client:
     def __init__(self, api_key, environment=PRODUCTION_ENVIRONMENT):
         self.api_key = api_key
         self.account = Account(self)
+        self.invoice = Invoices(self)
 
         if environment not in [PRODUCTION_ENVIRONMENT, SANDBOX_ENVIRONMENT]:
             raise InvalidEnvironment(environment)
@@ -54,7 +55,6 @@ class Client:
         return self._handle_response(response)
 
 
-# Use this for everything
 class SubClient:
     client: Client
 
@@ -65,3 +65,35 @@ class SubClient:
 class Account(SubClient):
     def my(self):
         return self.client._handle_request("GET", "/account")
+
+
+class Invoices(SubClient):
+    def get(self):
+        return self.client._handle_request("GET", "/invoices")
+
+    def create(
+        self,
+        customerId,
+        sendMail,
+        excludeMydata,
+        invoiceDate,
+        invoiceTypeId,
+        isPaid,
+        mydataInvoiceType,
+        taxes,
+        products,
+        tags,
+        mydataPayment,
+        reminder
+    ) -> dict:
+
+        return self.client._handle_request("POST", "/invoices")
+
+    def show(self, uuid):
+        return self.client._handle_request("GET", f"/invoices/{uuid}")
+
+    def update(self, uuid, data):
+        return self.client._handle_request("PUT", f"/invoices/{uuid}", data=data)
+
+    def delete(self, uuid):
+        return self.client._handle_request("DELETE", f"/invoices/{uuid}")
