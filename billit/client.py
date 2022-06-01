@@ -1,4 +1,7 @@
+from dataclasses import dataclass
 import requests
+
+from billit.utils.tax_utils import Tax
 
 from .auth import BillitAuthentication
 from .constants import (
@@ -18,7 +21,7 @@ class Client:
     def __init__(self, api_key, environment=PRODUCTION_ENVIRONMENT):
         self.api_key = api_key
         self.account = Account(self)
-        self.invoice = Invoices(self)
+        self.invoices = Invoices(self)
 
         if environment not in [PRODUCTION_ENVIRONMENT, SANDBOX_ENVIRONMENT]:
             raise InvalidEnvironment(environment)
@@ -68,31 +71,73 @@ class Account(SubClient):
 
 
 class Invoices(SubClient):
-    def get(self):
+    def list(self):
         return self.client._handle_request("GET", "/invoices")
 
     def create(
         self,
-        customerId,
-        sendMail,
-        excludeMydata,
-        invoiceDate,
-        invoiceTypeId,
-        isPaid,
-        mydataInvoiceType,
-        taxes,
-        products,
-        tags,
-        mydataPayment,
-        reminder
-    ) -> dict:
+        customerId: int,
+        sendMail: bool,
+        excludeMydata: bool,
+        invoiceDate: str,
+        invoiceTypeId: int,
+        isPaid: bool,
+        mydataInvoiceType: str,
+        taxes: Tax,
+        products: list,
+        tags: list,
+        mydataPayment: dict,
+        mailOptions: str,
+        reminder: bool,
+    ):
+        data = {
+            "customerId": customerId,
+            "sendMail": sendMail,
+            "excludeMydata": excludeMydata,
+            "invoiceDate": invoiceDate,
+            "invoiceTypeId": invoiceTypeId,
+            "isPaid": isPaid,
+            "mydataInvoiceType": mydataInvoiceType,
+            "taxes": dataclass.asdict(taxes),
+            "products": products,
+            "tags": tags,
+            "mydataPayment": mydataPayment,
+            "mailOptions": mailOptions,
+            "reminder": reminder,
+        }
 
-        return self.client._handle_request("POST", "/invoices")
+        return self.client._handle_request("POST", "/invoices", data=data)
 
     def show(self, uuid):
         return self.client._handle_request("GET", f"/invoices/{uuid}")
 
-    def update(self, uuid, data):
+    def update(
+        self,
+        uuid,
+        customerId: int,
+        sendMail: bool,
+        excludeMydata: bool,
+        invoiceDate: str,
+        invoiceTypeId: int,
+        mydataInvoiceType: str,
+        taxes: Tax,
+        products: list,
+        tags: list,
+        mydataPayment: dict,
+    ):
+        data = {
+            "customerId": customerId,
+            "sendMail": sendMail,
+            "excludeMydata": excludeMydata,
+            "invoiceDate": invoiceDate,
+            "invoiceTypeId": invoiceTypeId,
+            "mydataInvoiceType": mydataInvoiceType,
+            "taxes": dataclass.asdict(taxes),
+            "products": products,
+            "tags": tags,
+            "mydataPayment": mydataPayment,
+        }
+
         return self.client._handle_request("PUT", f"/invoices/{uuid}", data=data)
 
     def delete(self, uuid):
