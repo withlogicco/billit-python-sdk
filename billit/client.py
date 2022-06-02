@@ -1,4 +1,8 @@
+from dataclasses import dataclass
+
 import requests
+
+from billit.utils.tax_utils import Tax
 
 from .auth import BillitAuthentication
 from .constants import (
@@ -18,6 +22,7 @@ class Client:
     def __init__(self, api_key, environment=PRODUCTION_ENVIRONMENT):
         self.api_key = api_key
         self.account = Account(self)
+        self.invoices = Invoices(self)
 
         if environment not in [PRODUCTION_ENVIRONMENT, SANDBOX_ENVIRONMENT]:
             raise InvalidEnvironment(environment)
@@ -54,7 +59,6 @@ class Client:
         return self._handle_response(response)
 
 
-# Use this for everything
 class SubClient:
     client: Client
 
@@ -65,3 +69,94 @@ class SubClient:
 class Account(SubClient):
     def my(self):
         return self.client._handle_request("GET", "/account")
+
+
+class Invoices(SubClient):
+    _args_api_mappings = {
+        "customer_id": "customerId",
+        "send_mail": "sendMail",
+        "exclude_mydata": "excludeMydata",
+        "invoice_date": "invoiceDate",
+        "invoice_type_id": "invoiceTypeId",
+        "is_paid": "isPaid",
+        "mydata_invoice_type": "mydataInvoiceType",
+        "taxes": "taxes",
+        "products": "products",
+        "tags": "tags",
+        "mydata_payment": "mydataPayment",
+        "mail_options": "mailOptions",
+        "reminder": "reminder",
+    }
+
+    def list(self):
+        return self.client._handle_request("GET", "/invoices")
+
+    def create(
+        self,
+        customer_id: int,
+        send_mail: bool,
+        exclude_mydata: bool,
+        invoice_date: str,
+        invoice_type_id: int,
+        is_paid: bool,
+        mydata_invoice_type: str,
+        taxes: Tax,
+        products: list,
+        tags: list,
+        mydata_payment: dict,
+        mail_options: str,
+        reminder: bool,
+    ):
+        data = {
+            self._args_api_mappings["customer_id"]: customer_id,
+            self._args_api_mappings["send_mail"]: send_mail,
+            self._args_api_mappings["exclude_mydata"]: exclude_mydata,
+            self._args_api_mappings["invoice_date"]: invoice_date,
+            self._args_api_mappings["invoice_type_id"]: invoice_type_id,
+            self._args_api_mappings["is_paid"]: isPaid,
+            self._args_api_mappings["mydata_invoice_type"]: mydata_invoice_type,
+            self._args_api_mappings["taxes"]: dataclass.asdict(taxes),
+            self._args_api_mappings["products"]: products,
+            self._args_api_mappings["tags"]: tags,
+            self._args_api_mappings["mydata_payment"]: mydata_payment,
+            self._args_api_mappings["mail_options"]: mail_options,
+            self._args_api_mappings["reminder"]: reminder,
+        }
+
+        return self.client._handle_request("POST", "/invoices", data=data)
+
+    def show(self, uuid):
+        return self.client._handle_request("GET", f"/invoices/{uuid}")
+
+    def update(
+        self,
+        uuid,
+        customer_id: int,
+        send_mail: bool,
+        exclude_mydata: bool,
+        invoice_date: str,
+        invoice_type_id: int,
+        mydata_invoice_type: str,
+        taxes: Tax,
+        products: list,
+        tags: list,
+        mydata_payment: dict,
+    ):
+
+        data = {
+            self._args_api_mappings["customer_id"]: customer_id,
+            self._args_api_mappings["send_mail"]: send_mail,
+            self._args_api_mappings["exclude_mydata"]: exclude_mydata,
+            self._args_api_mappings["invoice_date"]: invoice_date,
+            self._args_api_mappings["invoice_type_id"]: invoice_type_id,
+            self._args_api_mappings["mydata_invoice_type"]: mydata_invoice_type,
+            self._args_api_mappings["taxes"]: dataclass.asdict(taxes),
+            self._args_api_mappings["products"]: products,
+            self._args_api_mappings["tags"]: tags,
+            self._args_api_mappings["mydata_payment"]: mydata_payment,
+        }
+
+        return self.client._handle_request("PUT", f"/invoices/{uuid}", data=data)
+
+    def delete(self, uuid):
+        return self.client._handle_request("DELETE", f"/invoices/{uuid}")
