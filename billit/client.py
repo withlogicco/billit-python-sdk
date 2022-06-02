@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+
 import requests
 
 from billit.utils.tax_utils import Tax
@@ -71,39 +72,55 @@ class Account(SubClient):
 
 
 class Invoices(SubClient):
+    _args_api_mappings = {
+        "customer_id": "customerId",
+        "send_mail": "sendMail",
+        "exclude_mydata": "excludeMydata",
+        "invoice_date": "invoiceDate",
+        "invoice_type_id": "invoiceTypeId",
+        "is_paid": "isPaid",
+        "mydata_invoice_type": "mydataInvoiceType",
+        "taxes": "taxes",
+        "products": "products",
+        "tags": "tags",
+        "mydata_payment": "mydataPayment",
+        "mail_options": "mailOptions",
+        "reminder": "reminder",
+    }
+
     def list(self):
         return self.client._handle_request("GET", "/invoices")
 
     def create(
         self,
-        customerId: int,
-        sendMail: bool,
-        excludeMydata: bool,
-        invoiceDate: str,
-        invoiceTypeId: int,
+        customer_id: int,
+        send_mail: bool,
+        exclude_mydata: bool,
+        invoice_date: str,
+        invoice_type_id: int,
         isPaid: bool,
-        mydataInvoiceType: str,
+        mydata_invoice_type: str,
         taxes: Tax,
         products: list,
         tags: list,
-        mydataPayment: dict,
-        mailOptions: str,
+        mydata_payment: dict,
+        mail_options: str,
         reminder: bool,
     ):
         data = {
-            "customerId": customerId,
-            "sendMail": sendMail,
-            "excludeMydata": excludeMydata,
-            "invoiceDate": invoiceDate,
-            "invoiceTypeId": invoiceTypeId,
-            "isPaid": isPaid,
-            "mydataInvoiceType": mydataInvoiceType,
-            "taxes": dataclass.asdict(taxes),
-            "products": products,
-            "tags": tags,
-            "mydataPayment": mydataPayment,
-            "mailOptions": mailOptions,
-            "reminder": reminder,
+            self._args_api_mappings["customer_id"]: customer_id,
+            self._args_api_mappings["send_mail"]: send_mail,
+            self._args_api_mappings["exclude_mydata"]: exclude_mydata,
+            self._args_api_mappings["invoice_date"]: invoice_date,
+            self._args_api_mappings["invoice_type_id"]: invoice_type_id,
+            self._args_api_mappings["is_paid"]: isPaid,
+            self._args_api_mappings["mydata_invoice_type"]: mydata_invoice_type,
+            self._args_api_mappings["taxes"]: dataclass.asdict(taxes),
+            self._args_api_mappings["products"]: products,
+            self._args_api_mappings["tags"]: tags,
+            self._args_api_mappings["mydata_payment"]: mydata_payment,
+            self._args_api_mappings["mail_options"]: mail_options,
+            self._args_api_mappings["reminder"]: reminder,
         }
 
         return self.client._handle_request("POST", "/invoices", data=data)
@@ -114,28 +131,29 @@ class Invoices(SubClient):
     def update(
         self,
         uuid,
-        customerId: int,
-        sendMail: bool,
-        excludeMydata: bool,
-        invoiceDate: str,
-        invoiceTypeId: int,
-        mydataInvoiceType: str,
+        customer_id: int,
+        send_mail: bool,
+        exclude_mydata: bool,
+        invoice_date: str,
+        invoice_type_id: int,
+        mydata_invoice_type: str,
         taxes: Tax,
         products: list,
         tags: list,
-        mydataPayment: dict,
+        mydata_payment: dict,
     ):
+
         data = {
-            "customerId": customerId,
-            "sendMail": sendMail,
-            "excludeMydata": excludeMydata,
-            "invoiceDate": invoiceDate,
-            "invoiceTypeId": invoiceTypeId,
-            "mydataInvoiceType": mydataInvoiceType,
-            "taxes": dataclass.asdict(taxes),
-            "products": products,
-            "tags": tags,
-            "mydataPayment": mydataPayment,
+            self._args_api_mappings["customer_id"]: customer_id,
+            self._args_api_mappings["send_mail"]: send_mail,
+            self._args_api_mappings["exclude_mydata"]: exclude_mydata,
+            self._args_api_mappings["invoice_date"]: invoice_date,
+            self._args_api_mappings["invoice_type_id"]: invoice_type_id,
+            self._args_api_mappings["mydata_invoice_type"]: mydata_invoice_type,
+            self._args_api_mappings["taxes"]: dataclass.asdict(taxes),
+            self._args_api_mappings["products"]: products,
+            self._args_api_mappings["tags"]: tags,
+            self._args_api_mappings["mydata_payment"]: mydata_payment,
         }
 
         return self.client._handle_request("PUT", f"/invoices/{uuid}", data=data)
