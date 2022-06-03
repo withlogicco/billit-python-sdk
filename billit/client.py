@@ -113,7 +113,7 @@ class Invoices(SubClient):
             self._args_api_mappings["exclude_mydata"]: exclude_mydata,
             self._args_api_mappings["invoice_date"]: invoice_date,
             self._args_api_mappings["invoice_type_id"]: invoice_type_id,
-            self._args_api_mappings["is_paid"]: isPaid,
+            self._args_api_mappings["is_paid"]: is_paid,
             self._args_api_mappings["mydata_invoice_type"]: mydata_invoice_type,
             self._args_api_mappings["taxes"]: dataclass.asdict(taxes),
             self._args_api_mappings["products"]: products,
