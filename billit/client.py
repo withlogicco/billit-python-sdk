@@ -98,7 +98,7 @@ class Invoices(SubClient):
         exclude_mydata: bool,
         invoice_date: str,
         invoice_type_id: int,
-        isPaid: bool,
+        is_paid: bool,
         mydata_invoice_type: str,
         taxes: Tax,
         products: list,
