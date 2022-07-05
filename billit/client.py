@@ -103,8 +103,8 @@ class Invoices(SubClient):
         is_paid: bool,
         mydata_invoice_type: str,
         taxes: List[Tax],
-        products: list,
-        tags: list,
+        products: List,
+        tags: List,
         mydata_payment: dict,
         mail_options: str,
         reminder: bool,
@@ -141,9 +141,9 @@ class Invoices(SubClient):
         invoice_date: str,
         invoice_type_id: int,
         mydata_invoice_type: str,
-        taxes: Tax,
-        products: list,
-        tags: list,
+        taxes: List[Tax],
+        products: List,
+        tags: List,
         mydata_payment: dict,
     ):
 
@@ -154,7 +154,9 @@ class Invoices(SubClient):
             self._args_api_mappings["invoice_date"]: invoice_date,
             self._args_api_mappings["invoice_type_id"]: invoice_type_id,
             self._args_api_mappings["mydata_invoice_type"]: mydata_invoice_type,
-            self._args_api_mappings["taxes"]: dataclass.asdict(taxes),
+            self._args_api_mappings["taxes"]: [
+                dataclasses.asdict(tax) for tax in taxes
+            ],
             self._args_api_mappings["products"]: products,
             self._args_api_mappings["tags"]: tags,
             self._args_api_mappings["mydata_payment"]: mydata_payment,
