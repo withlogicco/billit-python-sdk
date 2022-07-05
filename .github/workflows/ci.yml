@@ -1,9 +1,6 @@
-name: Release
+name: CI
 
-on:
-  release:
-    types:
-      - published
+on: push
 
 jobs:
   deploy:
@@ -16,5 +13,5 @@ jobs:
           python-version: "3.10"
           cache: poetry
       - run: poetry install
-      - run: poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
-      - run: poetry publish --build
+      - run: poetry run black --check .
+      - run: poetry run mypy --check .
