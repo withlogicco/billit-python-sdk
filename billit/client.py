@@ -45,7 +45,8 @@ class Client:
         except:
             error = f"{response.text}"
             if "application/json" in response.headers["Content-Type"]:
-                error = f"{response.json()['message']} : {response.json()['errors']}"
+                resp = response.json()
+                error = f"Message: {resp['message']}, Error details: {resp.get('errors', None)}, {resp.get('data', None)}"
 
             raise ApiError(error, response.status_code)
 
