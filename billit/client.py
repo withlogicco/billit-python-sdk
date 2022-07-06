@@ -45,7 +45,7 @@ class Client:
         except:
             error = f"{response.text}"
             if "application/json" in response.headers["Content-Type"]:
-                error = f"{response.json()['message']}"
+                error = f"{response.json()['message']} : {response.json()['errors']}"
 
             raise ApiError(error, response.status_code)
 
@@ -55,7 +55,7 @@ class Client:
             method,
             url,
             params=params,
-            data=data,
+            json=data,
             auth=BillitAuthentication(self.api_key),
         )
         return self._handle_response(response)
