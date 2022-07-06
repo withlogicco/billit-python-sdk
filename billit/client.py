@@ -58,7 +58,6 @@ class Client:
             data=data,
             auth=BillitAuthentication(self.api_key),
         )
-        print(response.json())
         return self._handle_response(response)
 
 
