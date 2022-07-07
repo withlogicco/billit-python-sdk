@@ -195,7 +195,7 @@ class Customers(SubClient):
     def list(self):
         return self.client._handle_request("GET", "/customers")
 
-    def show(self, customer_id : int):
+    def show(self, customer_id: int):
         return self.client._handle_request("GET", f"/customers/{customer_id}")
 
     def create(
@@ -293,5 +293,5 @@ class Customers(SubClient):
             "PUT", f"/customers/{customer_id}", data=data
         )
 
-    def delete(self, customer_id : int):
+    def delete(self, customer_id: int):
         return self.client._handle_request("DELETE", f"/customers/{customer_id}")
