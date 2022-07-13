@@ -41,7 +41,7 @@ class Client:
         try:
             response.raise_for_status()
 
-            return response.json()
+            return response
         except:
             error = f"{response.text}"
             if "application/json" in response.headers["Content-Type"]:
@@ -127,7 +127,7 @@ class Invoices(SubClient):
             self._args_api_mappings["mail_options"]: mail_options,
             self._args_api_mappings["reminder"]: reminder,
         }
-
+        print(data)
         return self.client._handle_request("POST", "/invoices", data=data)
 
     def show(self, uuid):
