@@ -127,7 +127,7 @@ class Invoices(SubClient):
             self._args_api_mappings["mail_options"]: mail_options,
             self._args_api_mappings["reminder"]: reminder,
         }
-        print(data)
+
         return self.client._handle_request("POST", "/invoices", data=data)
 
     def show(self, uuid):
