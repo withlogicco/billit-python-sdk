@@ -41,12 +41,15 @@ class Client:
         try:
             response.raise_for_status()
 
-            return response
+            return response.json()
         except:
             error = f"{response.text}"
             if "application/json" in response.headers["Content-Type"]:
                 resp = response.json()
-                error = f"Message: {resp['message']}, Error details: {resp.get('errors', None)}, {resp.get('data', None)}"
+                if "message" in resp:
+                    error = f"Message: {resp.get('message')} , Error details: {resp.get('errors')}, {resp.get('data')}"
+                elif "msg" in resp:
+                    error = f"Message: {resp.get('msg')} , Error details: {resp.get('errors')}, {resp.get('data')}"
 
             raise APIError(error, response)
 
