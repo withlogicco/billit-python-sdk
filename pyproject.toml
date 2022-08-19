@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "billit"
-version = "0.2.0"
+version = "0.3.0"
 description = "Python SDK for https://billit.io"
 authors = ["Paris Kasidiaris <paris@withlogic.co>"]
 license = "MIT"
@@ -12,8 +12,8 @@ requests = "^2.27.1"
 types-requests = "^2.28.0"
 
 [tool.poetry.dev-dependencies]
-black = "^22.3.0"
-mypy = "^0.961"
+black = "^22.6.0"
+mypy = "^0.971"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
