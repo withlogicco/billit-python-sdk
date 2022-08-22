@@ -12,7 +12,7 @@ from .constants import (
     SANDBOX_BASE_URL,
     SANDBOX_ENVIRONMENT,
 )
-from .error import ApiError, AuthenticationError, InvalidEnvironment
+from .exceptions import APIError, AuthenticationError, InvalidEnvironment
 
 
 class Client:
@@ -46,9 +46,15 @@ class Client:
             error = f"{response.text}"
             if "application/json" in response.headers["Content-Type"]:
                 resp = response.json()
-                error = f"Message: {resp['message']}, Error details: {resp.get('errors', None)}, {resp.get('data', None)}"
+                if "message" in resp:
+                    error = f"Message: {resp.get('message')} , Error details: {resp.get('errors')}, {resp.get('data')}"
+                    raise APIError(error, response)
 
-            raise ApiError(error, response.status_code)
+                elif "msg" in resp:
+                    error = f"Message: {resp.get('msg')} , Error details: {resp.get('errors')}, {resp.get('data')}"
+                    raise APIError(error, response)
+
+            raise APIError(error, response)
 
     def _handle_request(self, method, endpoint, params=None, data=None):
         url = self.base_url + endpoint
