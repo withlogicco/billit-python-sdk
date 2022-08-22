@@ -48,8 +48,11 @@ class Client:
                 resp = response.json()
                 if "message" in resp:
                     error = f"Message: {resp.get('message')} , Error details: {resp.get('errors')}, {resp.get('data')}"
+                    raise APIError(error, response)
+
                 elif "msg" in resp:
                     error = f"Message: {resp.get('msg')} , Error details: {resp.get('errors')}, {resp.get('data')}"
+                    raise APIError(error, response)
 
             raise APIError(error, response)
 
