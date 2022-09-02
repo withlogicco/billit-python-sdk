@@ -41,7 +41,7 @@ class Client:
             raise AuthenticationError(response.json()["message"], response.status_code)
 
         if response.status_code == 204:
-            return response.text
+            return None
 
         try:
             response.raise_for_status()
