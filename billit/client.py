@@ -26,6 +26,7 @@ class Client:
         self.invoices = Invoices(self)
         self.customers = Customers(self)
         self.contacts = Contacts(self)
+        self.ocp = Ocp(self)
 
         if environment not in [PRODUCTION_ENVIRONMENT, SANDBOX_ENVIRONMENT]:
             raise InvalidEnvironment(environment)
@@ -449,3 +450,89 @@ class Contacts(SubClient):
 
     def delete(self, contact_id: int):
         return self.client._handle_request("DELETE", f"/contacts/{contact_id}")
+
+
+class Ocp(SubClient):
+    _args_api_mappings = {
+        "title": "title",
+        "description": "description",
+        "cost": "cost",
+        "customer_id": "customerId",
+        "invoice_type_id": "invoiceTypeId",
+        "net_value": "netValue",
+        "vat_id": "vatId",
+        "product_id": "productId",
+        "payment_method_id": "paymentMethodId",
+        "lang": "lang",
+        "expiration_at": "expirationAt",
+    }
+
+    def list(self):
+        return self.client._handle_request("GET", "/ocps")
+
+    def show(self, ocp_id: str):
+        return self.client._handle_request("GET", f"/ocps/{ocp_id}")
+
+    def create(
+        self,
+        title: str,
+        description: str,
+        cost: int,
+        customer_id: int,
+        invoice_type_id: int,
+        net_value: int,
+        vat_id: int,
+        product_id: int,
+        payment_method_id: int,
+        lang: str,
+        expiration_at: str,
+    ):
+        data = {
+            self._args_api_mappings["title"]: title,
+            self._args_api_mappings["description"]: description,
+            self._args_api_mappings["cost"]: cost,
+            self._args_api_mappings["customer_id"]: customer_id,
+            self._args_api_mappings["invoice_type_id"]: invoice_type_id,
+            self._args_api_mappings["net_value"]: net_value,
+            self._args_api_mappings["vat_id"]: vat_id,
+            self._args_api_mappings["product_id"]: product_id,
+            self._args_api_mappings["payment_method_id"]: payment_method_id,
+            self._args_api_mappings["lang"]: lang,
+            self._args_api_mappings["expiration_at"]: expiration_at,
+        }
+
+        return self.client._handle_request("POST", "/ocps", data=data)
+
+    def update(
+        self,
+        ocp_id: str,
+        title: str,
+        description: str,
+        cost: int,
+        customer_id: int,
+        invoice_type_id: int,
+        net_value: int,
+        vat_id: int,
+        product_id: int,
+        payment_method_id: int,
+        lang: str,
+        expiration_at: str,
+    ):
+        data = {
+            self._args_api_mappings["title"]: title,
+            self._args_api_mappings["description"]: description,
+            self._args_api_mappings["cost"]: cost,
+            self._args_api_mappings["customer_id"]: customer_id,
+            self._args_api_mappings["invoice_type_id"]: invoice_type_id,
+            self._args_api_mappings["net_value"]: net_value,
+            self._args_api_mappings["vat_id"]: vat_id,
+            self._args_api_mappings["product_id"]: product_id,
+            self._args_api_mappings["payment_method_id"]: payment_method_id,
+            self._args_api_mappings["lang"]: lang,
+            self._args_api_mappings["expiration_at"]: expiration_at,
+        }
+
+        return self.client._handle_request("PUT", f"/ocps/{ocp_id}", data=data)
+
+    def delete(self, ocp_id: str):
+        return self.client._handle_request("DELETE", f"/ocps/{ocp_id}")
