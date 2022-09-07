@@ -26,7 +26,7 @@ class Client:
         self.invoices = Invoices(self)
         self.customers = Customers(self)
         self.contacts = Contacts(self)
-        self.ocp = Ocp(self)
+        self.ocp = OCP(self)
 
         if environment not in [PRODUCTION_ENVIRONMENT, SANDBOX_ENVIRONMENT]:
             raise InvalidEnvironment(environment)
@@ -452,7 +452,7 @@ class Contacts(SubClient):
         return self.client._handle_request("DELETE", f"/contacts/{contact_id}")
 
 
-class Ocp(SubClient):
+class OCP(SubClient):
     _args_api_mappings = {
         "title": "title",
         "description": "description",
