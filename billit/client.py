@@ -182,6 +182,10 @@ class Invoices(SubClient):
 
 
 class Customers(SubClient):
+    DOMESTIC_CUSTOMER: int = 1
+    INTRA_COMMUNITY_CUSTOMER: int = 2
+    FOREIGN_CUSTOMER: int = 3
+    PRIVATE_INDIVIDUAL: int = 4
     _args_api_mappings = {
         "is_company": "isCompany",
         "company": "company",
