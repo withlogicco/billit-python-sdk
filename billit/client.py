@@ -626,7 +626,6 @@ class Products(SubClient):
         return self.client._handle_request("DELETE", f"/products/{product_id}")
 
 
-
 class Tags(SubClient):
     def list(self):
         return self.client._handle_request("GET", "/tags")
@@ -636,6 +635,7 @@ class Tags(SubClient):
 
     def delete(self, tag_id: str):
         return self.client._handle_request("DELETE", f"/tags/{tag_id}")
+
 
 class Purchases(SubClient):
     _args_api_mappings = {
