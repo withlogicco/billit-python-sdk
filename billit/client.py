@@ -28,6 +28,7 @@ class Client:
         self.contacts = Contacts(self)
         self.ocp = OCP(self)
         self.products = Products(self)
+        self.tags = Tags(self)
 
         if environment not in [PRODUCTION_ENVIRONMENT, SANDBOX_ENVIRONMENT]:
             raise InvalidEnvironment(environment)
@@ -622,3 +623,14 @@ class Products(SubClient):
 
     def delete(self, product_id: str):
         return self.client._handle_request("DELETE", f"/products/{product_id}")
+
+
+class Tags(SubClient):
+    def list(self):
+        return self.client._handle_request("GET", "/tags")
+
+    def show(self, tag_id: str):
+        return self.client._handle_request("GET", f"/tags/{tag_id}")
+
+    def delete(self, tag_id: str):
+        return self.client._handle_request("DELETE", f"/tags/{tag_id}")
