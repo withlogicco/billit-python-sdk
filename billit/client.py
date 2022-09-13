@@ -27,6 +27,7 @@ class Client:
         self.customers = Customers(self)
         self.contacts = Contacts(self)
         self.ocp = OCP(self)
+        self.products = Products(self)
         self.purchases = Purchases(self)
 
         if environment not in [PRODUCTION_ENVIRONMENT, SANDBOX_ENVIRONMENT]:
@@ -183,6 +184,10 @@ class Invoices(SubClient):
 
 
 class Customers(SubClient):
+    DOMESTIC_CUSTOMER: int = 1
+    INTRA_COMMUNITY_CUSTOMER: int = 2
+    FOREIGN_CUSTOMER: int = 3
+    PRIVATE_INDIVIDUAL: int = 4
     _args_api_mappings = {
         "is_company": "isCompany",
         "company": "company",
@@ -537,6 +542,86 @@ class OCP(SubClient):
 
     def delete(self, ocp_id: str):
         return self.client._handle_request("DELETE", f"/ocps/{ocp_id}")
+
+class Products(SubClient):
+    _args_api_mappings = {
+        "name": "name",
+        "description": "description",
+        "name_sec": "nameSec",
+        "description_sec": "descriptionSec",
+        "unit_price": "unitPrice",
+        "default_vat_id": "defaultVatId",
+        "stock": "stock",
+        "with_stock": "withStock",
+        "is_vat_included": "isVatIncluded",
+        "active": "active",
+    }
+
+    def list(self):
+        return self.client._handle_request("GET", "/products")
+
+    def show(self, product_id: str):
+        return self.client._handle_request("GET", f"/products/{product_id}")
+
+    def create(
+        self,
+        name: str,
+        description: str,
+        name_sec: str,
+        description_sec: str,
+        unit_price: int,
+        default_vat_id: int,
+        stock: int,
+        with_stock: bool,
+        is_vat_included: bool,
+        active: bool,
+    ):
+        data = {
+            self._args_api_mappings["name"]: name,
+            self._args_api_mappings["description"]: description,
+            self._args_api_mappings["name_sec"]: name_sec,
+            self._args_api_mappings["description_sec"]: description_sec,
+            self._args_api_mappings["unit_price"]: unit_price,
+            self._args_api_mappings["default_vat_id"]: default_vat_id,
+            self._args_api_mappings["stock"]: stock,
+            self._args_api_mappings["with_stock"]: with_stock,
+            self._args_api_mappings["is_vat_included"]: is_vat_included,
+            self._args_api_mappings["active"]: active,
+        }
+
+        return self.client._handle_request("POST", "/products", data=data)
+
+    def update(
+        self,
+        product_id: str,
+        name: str,
+        description: str,
+        name_sec: str,
+        description_sec: str,
+        unit_price: int,
+        default_vat_id: int,
+        stock: int,
+        with_stock: bool,
+        is_vat_included: bool,
+        active: bool,
+    ):
+        data = {
+            self._args_api_mappings["name"]: name,
+            self._args_api_mappings["description"]: description,
+            self._args_api_mappings["name_sec"]: name_sec,
+            self._args_api_mappings["description_sec"]: description_sec,
+            self._args_api_mappings["unit_price"]: unit_price,
+            self._args_api_mappings["default_vat_id"]: default_vat_id,
+            self._args_api_mappings["stock"]: stock,
+            self._args_api_mappings["with_stock"]: with_stock,
+            self._args_api_mappings["is_vat_included"]: is_vat_included,
+            self._args_api_mappings["active"]: active,
+        }
+
+        return self.client._handle_request("PUT", f"/products/{product_id}", data=data)
+
+    def delete(self, product_id: str):
+        return self.client._handle_request("DELETE", f"/products/{product_id}")
 
 
 class Purchases(SubClient):
