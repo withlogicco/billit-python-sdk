@@ -543,6 +543,7 @@ class OCP(SubClient):
     def delete(self, ocp_id: str):
         return self.client._handle_request("DELETE", f"/ocps/{ocp_id}")
 
+
 class Products(SubClient):
     _args_api_mappings = {
         "name": "name",
