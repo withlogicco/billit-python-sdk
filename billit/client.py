@@ -29,6 +29,7 @@ class Client:
         self.ocp = OCP(self)
         self.products = Products(self)
         self.tags = Tags(self)
+        self.purchases = Purchases(self)
 
         if environment not in [PRODUCTION_ENVIRONMENT, SANDBOX_ENVIRONMENT]:
             raise InvalidEnvironment(environment)
@@ -625,6 +626,7 @@ class Products(SubClient):
         return self.client._handle_request("DELETE", f"/products/{product_id}")
 
 
+
 class Tags(SubClient):
     def list(self):
         return self.client._handle_request("GET", "/tags")
@@ -634,3 +636,45 @@ class Tags(SubClient):
 
     def delete(self, tag_id: str):
         return self.client._handle_request("DELETE", f"/tags/{tag_id}")
+
+class Purchases(SubClient):
+    _args_api_mappings = {
+        "supplier_id": "supplierId",
+        "invoice_num": "invoiceNum",
+        "vat_amount": "vatAmount",
+        "clean_amount": "cleanAmount",
+        "date_occurred": "dateOccurred",
+        "irs_amount": "irsAmount",
+        "irs_type": "irsType",
+    }
+
+    def list(self):
+        return self.client._handle_request("GET", "/purchases")
+
+    def show(self, purchase_id: str):
+        return self.client._handle_request("GET", f"/purchases/{purchase_id}")
+
+    def create(
+        self,
+        supplier_id,
+        invoice_num,
+        vat_amount,
+        clean_amount,
+        date_occurred,
+        irs_amount,
+        irs_type,
+    ):
+        data = {
+            self._args_api_mappings["supplier_id"]: supplier_id,
+            self._args_api_mappings["invoice_num"]: invoice_num,
+            self._args_api_mappings["vat_amount"]: vat_amount,
+            self._args_api_mappings["clean_amount"]: clean_amount,
+            self._args_api_mappings["date_occurred"]: date_occurred,
+            self._args_api_mappings["irs_amount"]: irs_amount,
+            self._args_api_mappings["irs_type"]: irs_type,
+        }
+
+        return self.client._handle_request("POST", "/purchases", data=data)
+
+    def delete(self, purchase_id: str):
+        return self.client._handle_request("DELETE", f"/purchases/{purchase_id}")
