@@ -30,6 +30,7 @@ class Client:
         self.products = Products(self)
         self.tags = Tags(self)
         self.purchases = Purchases(self)
+        self.payments = Payments(self)
 
         if environment not in [PRODUCTION_ENVIRONMENT, SANDBOX_ENVIRONMENT]:
             raise InvalidEnvironment(environment)
@@ -656,13 +657,13 @@ class Purchases(SubClient):
 
     def create(
         self,
-        supplier_id,
-        invoice_num,
-        vat_amount,
-        clean_amount,
-        date_occurred,
-        irs_amount,
-        irs_type,
+        supplier_id: int,
+        invoice_num: int,
+        vat_amount: int,
+        clean_amount: int,
+        date_occurred: str,
+        irs_amount: int,
+        irs_type: int,
     ):
         data = {
             self._args_api_mappings["supplier_id"]: supplier_id,
@@ -678,3 +679,43 @@ class Purchases(SubClient):
 
     def delete(self, purchase_id: str):
         return self.client._handle_request("DELETE", f"/purchases/{purchase_id}")
+
+
+class Payments(SubClient):
+    _args_api_mappings = {
+        "customer_id": "customerId",
+        "date_occurred": "dateOccurred",
+        "amount": "amount",
+        "payment_method": "paymentMethod",
+        "payment_type": "paymentType",
+        "amount_left_over": "amountLeftOver",
+        "selections_amount": "selectionsAmount",
+        "invoices_paid": "invoicesPaid",
+    }
+
+    def list(self):
+        return self.client._handle_request("GET", "/payments")
+
+    def create(
+        self,
+        customer_id: int,
+        date_occurred: str,
+        amount: int,
+        payment_method: int,
+        payment_type: int,
+        amount_left_over: int,
+        selections_amount: int,
+        invoices_paid: List,
+    ):
+        data = {
+            self._args_api_mappings["customer_id"]: customer_id,
+            self._args_api_mappings["date_occurred"]: date_occurred,
+            self._args_api_mappings["amount"]: amount,
+            self._args_api_mappings["payment_method"]: payment_method,
+            self._args_api_mappings["payment_type"]: payment_type,
+            self._args_api_mappings["amount_left_over"]: amount_left_over,
+            self._args_api_mappings["selections_amount"]: selections_amount,
+            self._args_api_mappings["invoices_paid"]: invoices_paid,
+        }
+
+        return self.client._handle_request("POST", "/payments", data=data)
