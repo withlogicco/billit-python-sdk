@@ -4,6 +4,7 @@ from typing import List
 import requests
 
 from billit.utils.tax_utils import Tax
+from billit.utils.payment_utils import PaidInvoice
 
 from .auth import BillitAuthentication
 from .constants import (
@@ -705,7 +706,7 @@ class Payments(SubClient):
         payment_type: int,
         amount_left_over: int,
         selections_amount: int,
-        invoices_paid: List,
+        invoices_paid: List[PaidInvoice],
     ):
         data = {
             self._args_api_mappings["customer_id"]: customer_id,
