@@ -351,10 +351,27 @@ class Contacts(SubClient):
         "contact_type": "contactType",
         "currency": "currency",
         "addresses": "addresses",
+        "email": "email",
+        "tags": "tags",
+        "default_vat_id": "defaultVatId",
     }
 
-    def list(self):
-        return self.client._handle_request("GET", "/contacts")
+    def list(
+        self,
+        per_page: int = 25,
+        with_relations: bool = True,
+        q: str = "",
+        tag_id: int = None,
+        unpaid: bool = None,
+    ):
+        params = {
+            "per_page": per_page,
+            "withRelations": "1" if with_relations else "0",
+            "q": q,
+            "tagId": tag_id,
+            "unpaid": "1" if unpaid else "0",
+        }
+        return self.client._handle_request("GET", "/contacts", params=params)
 
     def show(self, contact_id: int):
         return self.client._handle_request("GET", f"/contacts/{contact_id}")
@@ -382,6 +399,9 @@ class Contacts(SubClient):
         contact_type: str,
         currency: str,
         addresses: List,
+        email: str = "",
+        tags: List[str] = [],
+        default_vat_id: int = None,
     ):
         data = {
             self._args_api_mappings["is_company"]: is_company,
@@ -405,6 +425,9 @@ class Contacts(SubClient):
             self._args_api_mappings["contact_type"]: contact_type,
             self._args_api_mappings["currency"]: currency,
             self._args_api_mappings["addresses"]: addresses,
+            self._args_api_mappings["email"]: email,
+            self._args_api_mappings["tags"]: tags,
+            self._args_api_mappings["default_vat_id"]: default_vat_id,
         }
 
         return self.client._handle_request("POST", "/contacts", data=data)
