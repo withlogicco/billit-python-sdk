@@ -3,8 +3,8 @@ from typing import List
 
 import requests
 
-from billit.utils.tax_utils import Tax
 from billit.utils.payment_utils import PaidInvoice
+from billit.utils.tax_utils import Tax
 
 from .auth import BillitAuthentication
 from .constants import (
@@ -106,6 +106,7 @@ class Invoices(SubClient):
         "mydata_payment": "mydataPayment",
         "mail_options": "mailOptions",
         "reminder": "reminder",
+        "payment_method": "paymentMethod",
     }
 
     def list(self):
@@ -121,11 +122,12 @@ class Invoices(SubClient):
         is_paid: bool,
         mydata_invoice_type: str,
         taxes: List[Tax],
-        products: List,
-        tags: List,
+        products: List[dict],
+        tags: List[str],
         mydata_payment: dict,
         mail_options: str,
         reminder: bool,
+        payment_method: List[str],
     ):
         data = {
             self._args_api_mappings["customer_id"]: customer_id,
@@ -143,6 +145,7 @@ class Invoices(SubClient):
             self._args_api_mappings["mydata_payment"]: mydata_payment,
             self._args_api_mappings["mail_options"]: mail_options,
             self._args_api_mappings["reminder"]: reminder,
+            self._args_api_mappings["payment_method"]: payment_method,
         }
 
         return self.client._handle_request("POST", "/invoices", data=data)
