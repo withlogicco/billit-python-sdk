@@ -3,8 +3,8 @@ from typing import List
 
 import requests
 
-from billit.utils.tax_utils import Tax
 from billit.utils.payment_utils import PaidInvoice
+from billit.utils.tax_utils import Tax
 
 from .auth import BillitAuthentication
 from .constants import (
@@ -106,6 +106,7 @@ class Invoices(SubClient):
         "mydata_payment": "mydataPayment",
         "mail_options": "mailOptions",
         "reminder": "reminder",
+        "payment_method": "paymentMethod",
     }
 
     def list(self):
@@ -121,11 +122,12 @@ class Invoices(SubClient):
         is_paid: bool,
         mydata_invoice_type: str,
         taxes: List[Tax],
-        products: List,
-        tags: List,
+        products: List[dict],
+        tags: List[str],
         mydata_payment: dict,
         mail_options: str,
         reminder: bool,
+        payment_method: List[str],
     ):
         data = {
             self._args_api_mappings["customer_id"]: customer_id,
@@ -143,6 +145,7 @@ class Invoices(SubClient):
             self._args_api_mappings["mydata_payment"]: mydata_payment,
             self._args_api_mappings["mail_options"]: mail_options,
             self._args_api_mappings["reminder"]: reminder,
+            self._args_api_mappings["payment_method"]: payment_method,
         }
 
         return self.client._handle_request("POST", "/invoices", data=data)
@@ -348,10 +351,27 @@ class Contacts(SubClient):
         "contact_type": "contactType",
         "currency": "currency",
         "addresses": "addresses",
+        "email": "email",
+        "tags": "tags",
+        "default_vat_id": "defaultVatId",
     }
 
-    def list(self):
-        return self.client._handle_request("GET", "/contacts")
+    def list(
+        self,
+        per_page: int = 25,
+        with_relations: bool = True,
+        q: str = "",
+        tag_id: int = None,
+        unpaid: bool = None,
+    ):
+        params = {
+            "per_page": per_page,
+            "withRelations": "1" if with_relations else "0",
+            "q": q,
+            "tagId": tag_id,
+            "unpaid": "1" if unpaid else "0",
+        }
+        return self.client._handle_request("GET", "/contacts", params=params)
 
     def show(self, contact_id: int):
         return self.client._handle_request("GET", f"/contacts/{contact_id}")
@@ -379,6 +399,9 @@ class Contacts(SubClient):
         contact_type: str,
         currency: str,
         addresses: List,
+        email: str = "",
+        tags: List[str] = [],
+        default_vat_id: int = None,
     ):
         data = {
             self._args_api_mappings["is_company"]: is_company,
@@ -402,6 +425,9 @@ class Contacts(SubClient):
             self._args_api_mappings["contact_type"]: contact_type,
             self._args_api_mappings["currency"]: currency,
             self._args_api_mappings["addresses"]: addresses,
+            self._args_api_mappings["email"]: email,
+            self._args_api_mappings["tags"]: tags,
+            self._args_api_mappings["default_vat_id"]: default_vat_id,
         }
 
         return self.client._handle_request("POST", "/contacts", data=data)
