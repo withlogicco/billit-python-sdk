@@ -42,7 +42,6 @@ class Client:
             self.base_url = SANDBOX_BASE_URL
 
     def _handle_response(self, response):
-
         if response.status_code == 401:
             raise AuthenticationError(response.json()["message"], response.status_code)
 
@@ -167,7 +166,6 @@ class Invoices(SubClient):
         tags: List,
         mydata_payment: dict,
     ):
-
         data = {
             self._args_api_mappings["customer_id"]: customer_id,
             self._args_api_mappings["send_mail"]: send_mail,
