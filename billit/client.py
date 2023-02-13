@@ -1,5 +1,5 @@
 import dataclasses
-from typing import List
+from typing import List, Optional
 
 import requests
 
@@ -359,8 +359,8 @@ class Contacts(SubClient):
         per_page: int = 25,
         with_relations: bool = True,
         q: str = "",
-        tag_id: int = None,
-        unpaid: bool = None,
+        tag_id: Optional[int] = None,
+        unpaid: Optional[bool] = None,
     ):
         params = {
             "per_page": per_page,
@@ -399,7 +399,7 @@ class Contacts(SubClient):
         addresses: List,
         email: str = "",
         tags: List[str] = [],
-        default_vat_id: int = None,
+        default_vat_id: Optional[int] = None,
     ):
         data = {
             self._args_api_mappings["is_company"]: is_company,
